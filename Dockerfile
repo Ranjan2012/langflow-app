@@ -1,15 +1,14 @@
-FROM langflowai/langflow:latest
+FROM python:3.9-slim
 
-# Set environment variables
+# Install LangFlow
+RUN pip install langflow
+
+# Set working directory
+WORKDIR /app
+
+# Railway provides PORT environment variable
 ENV LANGFLOW_HOST=0.0.0.0
-ENV LANGFLOW_PORT=7860
+ENV LANGFLOW_PORT=$PORT
 
-# Expose the port
-EXPOSE 7860
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:7860/ || exit 1
-
-# Start LangFlow
-CMD ["langflow", "run", "--host", "0.0.0.0", "--port", "7860"]
+# Start command for Railway
+CMD langflow run --host 0.0.0.0 --port $PORT
